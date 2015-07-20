@@ -1,14 +1,18 @@
 var _ = require('lodash');
 
 function strlen(str){
-  var code = /\u001b\[(?:\d*;){0,5}\d*m/g;
-  var stripped = ("" + str).replace(code,'');
+  var stripped = ("" + str).replace(codeRegex(),'');
   var split = stripped.split("\n");
   return split.reduce(function (memo, s) { return (s.length > memo) ? s.length : memo }, 0);
 }
 
 function repeat(str,times){
   return Array(times + 1).join(str);
+}
+
+function codeRegex(){
+  return /\u001b\[(\d*)(;\d*)?(;\d*)?(;\d*)?(;\d*)?(;\d*)?m/g;
+  //return /\u001b\[(?:\d*;){0,5}\d*m/g;
 }
 
 function pad(str, len, pad, dir) {
@@ -52,7 +56,9 @@ addToCodeCache('inverse', 7, 27);
 addToCodeCache('strikethrough', 9, 29);
 
 
-function updateState(state,controlChars){
+function updateState(state,matchArray){
+  console.log(matchArray);
+  var controlChars = matchArray[0];
   if(controlChars.length >= 5){
     if(controlChars.charAt(2) == '3') {
       state.lastForegroundAdded = controlChars;
@@ -63,16 +69,24 @@ function updateState(state,controlChars){
       return;
     }
   }
+  if (/\u001b\[0*m/.test(controlChars)) {
+    for (var i in state) {
+      if (state.hasOwnProperty(i)) {
+        delete state[i];
+      }
+    }
+    return;
+  }
   var info = codeCache[controlChars];
   state[info.set] = info.to;
 }
 
 function readState(line){
-  var code = /\u001b\[(?:\d*;){0,5}\d*m/g;
+  var code = codeRegex();
   var controlChars = code.exec(line);
   var state = {};
   while(controlChars !== null){
-    updateState(state,controlChars[0]);
+    updateState(state,controlChars);
     controlChars = code.exec(line);
   }
   return state;
@@ -124,6 +138,32 @@ function rewindState(state,ret){
   return ret;
 }
 
+function splitCode(str){
+  var split = str.split(codeRegex());
+  var arr  = [];
+  for (var i = 0; i < split.length; i += 7) {
+    var s = '\u001b[';
+    var arr2 = [s];
+    for (var j = 1; j <= 6; j++) {
+      var part = split[i + j];
+      arr2.push(part);
+      if (part) {
+        if (j !== 1) {
+          s += ';'
+        }
+        s += part;
+      }
+    }
+    s += 'm';
+    arr2[0]=s;
+    arr.push({
+      text: split[i],
+      match: arr2
+    });
+  }
+  return arr;
+}
+
 function truncate(str, desiredLength, truncateChar){
   truncateChar = truncateChar || '…';
   var lengthOfStr = strlen(str);
@@ -134,27 +174,24 @@ function truncate(str, desiredLength, truncateChar){
   if(lengthOfStr === str.length){
     return str.substr(0, desiredLength) + truncateChar;
   }
-  var code = /\u001b\[(?:\d*;){0,5}\d*m/g;
-  var split = str.split(/\u001b\[(?:\d*;){0,5}\d*m/g);
-  var splitIndex = 0;
-  var retLen = 0;
-  var ret = '';
-  var myArray;
+  var split = splitCode(str);
   var state = {};
+  var ret = '';
+  var retLen = 0;
+  var i = 0;
 
-  while(retLen < desiredLength){
-    myArray = code.exec(str);
-    var toAdd = split[splitIndex];
-    splitIndex++;
-    if (retLen + toAdd.length > desiredLength){
+  while (retLen < desiredLength) {
+    var part = split[i];
+    i++;
+    var toAdd = part.text;
+    if (retLen + toAdd.length > desiredLength) {
       toAdd = toAdd.substr(0, desiredLength - retLen);
     }
     ret += toAdd;
     retLen += toAdd.length;
-    if(retLen < desiredLength){
-      var controlChars = myArray[0];
-      ret += controlChars;
-      updateState(state,controlChars);
+    if(retLen < desiredLength) {
+      ret += part.match[0];
+      updateState(state, part.match);
     }
   }
 
