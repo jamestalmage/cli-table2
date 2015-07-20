@@ -259,6 +259,18 @@ function colorizeLines(input){
   return output;
 }
 
+function setOption(objA,objB,nameB,targetObj){
+  var nameA = nameB.split('-');
+  if(nameA.length > 1) {
+    nameA[1] = nameA[1].charAt(0).toUpperCase() + nameA[1].substr(1);
+    nameA = nameA.join('');
+    targetObj[nameA] = objA[nameA] || objA[nameB] || objB[nameA] || objB[nameB];
+  }
+  else {
+    targetObj[nameB] = objA[nameB] || objB[nameB];
+  }
+}
+
 module.exports = {
   strlen:strlen,
   repeat:repeat,
@@ -266,5 +278,6 @@ module.exports = {
   truncate:truncate,
   mergeOptions:mergeOptions,
   wordWrap:multiLineWordWrap,
-  colorizeLines:colorizeLines
+  colorizeLines:colorizeLines,
+  setOption:setOption
 };

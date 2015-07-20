@@ -308,17 +308,7 @@ ColSpanCell.prototype.mergeTableOptions =
 RowSpanCell.prototype.mergeTableOptions = function(){};
 
 // HELPER FUNCTIONS
-function setOption(objA,objB,nameB,targetObj){
-  var nameA = nameB.split('-');
-  if(nameA.length > 1) {
-    nameA[1] = nameA[1].charAt(0).toUpperCase() + nameA[1].substr(1);
-    nameA = nameA.join('');
-    targetObj[nameA] = objA[nameA] || objA[nameB] || objB[nameA] || objB[nameB];
-  }
-  else {
-    targetObj[nameB] = objA[nameB] || objB[nameB];
-  }
-}
+var setOption = utils.setOption;
 
 function findDimension(dimensionTable, startingIndex, span){
   var ret = dimensionTable[startingIndex];
