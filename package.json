@@ -7,7 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "lodash": "3.10.1"
+    "lodash": "^3.10.1"
   },
   "devDependencies": {
     "ansi-256-colors": "^1.1.0",
@@ -24,7 +24,7 @@
     "sinon-chai": "2.8.0"
   },
   "optionalDependencies": {
-    "colors": "1.1.2"
+    "colors": "^1.1.2"
   },
   "scripts": {
     "test": "gulp coverage"
