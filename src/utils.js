@@ -1,14 +1,8 @@
 var _ = require('lodash');
+var strlen = require('widest-line');
 
 function codeRegex(capture){
   return capture ? /\u001b\[((?:\d*;){0,5}\d*)m/g : /\u001b\[(?:\d*;){0,5}\d*m/g
-}
-
-function strlen(str){
-  var code = codeRegex();
-  var stripped = ("" + str).replace(code,'');
-  var split = stripped.split("\n");
-  return split.reduce(function (memo, s) { return (s.length > memo) ? s.length : memo }, 0);
 }
 
 function repeat(str,times){

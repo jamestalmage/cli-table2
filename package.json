@@ -1,13 +1,14 @@
 {
   "name": "cli-table2",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Pretty unicode tables for the command line. Based on the original cli-table.",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "lodash": "^3.10.1"
+    "lodash": "^3.10.1",
+    "widest-line": "~1.0.0"
   },
   "devDependencies": {
     "ansi-256-colors": "^1.1.0",

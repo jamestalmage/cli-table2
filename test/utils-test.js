@@ -32,6 +32,14 @@ describe('utils',function(){
     it('length of "hello\\nhi\\nheynow" is 6',function(){
       expect(strlen('hello\nhi\nheynow')).to.equal(6);
     });
+
+    it('length of "中文字符" is 8',function(){
+      expect(strlen('中文字符')).to.equal(8);
+    });
+
+    it('length of "日本語の文字" is 12',function(){
+      expect(strlen('日本語の文字')).to.equal(12);
+    });
   });
 
   describe('repeat',function(){
