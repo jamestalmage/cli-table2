@@ -1,5 +1,6 @@
 var _ = require('lodash');
-var strlen = require('widest-line');
+var widestLine = require('widest-line');
+var strlen = widestLine;
 
 function codeRegex(capture){
   return capture ? /\u001b\[((?:\d*;){0,5}\d*)m/g : /\u001b\[(?:\d*;){0,5}\d*m/g

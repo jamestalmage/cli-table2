@@ -34,7 +34,6 @@ describe('@api original-cli-table index tests',function(){
         , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
         , '│ v0.1 │ 日本語テスト        │ rauchg@gmail.com        │ 10 minutes ago  │'
         , '└──────┴─────────────────────┴─────────────────────────┴─────────────────┘'
-
       ];
 
       expect(table.toString()).to.equal(expected.join("\n"));
