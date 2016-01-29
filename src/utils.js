@@ -144,27 +144,18 @@ function rewindState(state,ret){
 }
 
 function truncateWidth(str, desiredLength){
-  while (strlen(str) > desiredLength){
-    if (str.length === strlen(str)) {
-      str = str.substr(0, desiredLength - str.length);
-    }
-    else {
-      str = str.slice(0, -1);
-    }
+  if (str.length === strlen(str)) {
+    return str.substr(0, desiredLength);
   }
+
+  while (strlen(str) > desiredLength){
+    str = str.slice(0, -1);
+  }
+
   return str;
 }
 
-function truncate(str, desiredLength, truncateChar){
-  truncateChar = truncateChar || '…';
-  var lengthOfStr = strlen(str);
-  if(lengthOfStr <= desiredLength){
-    return str;
-  }
-  desiredLength -= strlen(truncateChar);
-  if(lengthOfStr === strlen(str)){
-    return truncateWidth(str, desiredLength) + truncateChar;
-  }
+function truncateWidthWithAnsi(str, desiredLength){
   var code = codeRegex(true);
   var split = str.split(codeRegex());
   var splitIndex = 0;
@@ -177,7 +168,9 @@ function truncate(str, desiredLength, truncateChar){
     myArray = code.exec(str);
     var toAdd = split[splitIndex];
     splitIndex++;
-    toAdd = truncateWidth(toAdd, desiredLength - retLen);
+    if (retLen + strlen(toAdd) > desiredLength){
+      toAdd = truncateWidth(toAdd, desiredLength - retLen);
+    }
     ret += toAdd;
     retLen += strlen(toAdd);
     if(retLen < desiredLength){
@@ -186,7 +179,18 @@ function truncate(str, desiredLength, truncateChar){
     }
   }
 
-  ret = unwindState(state,ret);
+  return unwindState(state,ret);
+}
+
+function truncate(str, desiredLength, truncateChar){
+  truncateChar = truncateChar || '…';
+  var lengthOfStr = strlen(str);
+  if(lengthOfStr <= desiredLength){
+    return str;
+  }
+  desiredLength -= strlen(truncateChar);
+
+  ret = truncateWidthWithAnsi(str, desiredLength);
 
   return ret + truncateChar;
 }
