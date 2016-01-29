@@ -173,7 +173,9 @@ function truncateWidthWithAnsi(str, desiredLength){
     }
     ret += toAdd;
     retLen += strlen(toAdd);
+
     if(retLen < desiredLength){
+      if (!myArray) { break; }  // full-width chars may cause a whitespace which cannot be filled
       ret += myArray[0];
       updateState(state,myArray);
     }
