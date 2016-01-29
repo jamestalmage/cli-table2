@@ -143,15 +143,27 @@ function rewindState(state,ret){
   return ret;
 }
 
+function truncateWidth(str, desiredLength){
+  while (strlen(str) > desiredLength){
+    if (str.length === strlen(str)) {
+      str = str.substr(0, desiredLength - str.length);
+    }
+    else {
+      str = str.slice(0, -1);
+    }
+  }
+  return str;
+}
+
 function truncate(str, desiredLength, truncateChar){
   truncateChar = truncateChar || '…';
   var lengthOfStr = strlen(str);
   if(lengthOfStr <= desiredLength){
     return str;
   }
-  desiredLength -= truncateChar.length;
-  if(lengthOfStr === str.length){
-    return str.substr(0, desiredLength) + truncateChar;
+  desiredLength -= strlen(truncateChar);
+  if(lengthOfStr === strlen(str)){
+    return truncateWidth(str, desiredLength) + truncateChar;
   }
   var code = codeRegex(true);
   var split = str.split(codeRegex());
@@ -165,11 +177,9 @@ function truncate(str, desiredLength, truncateChar){
     myArray = code.exec(str);
     var toAdd = split[splitIndex];
     splitIndex++;
-    if (retLen + toAdd.length > desiredLength){
-      toAdd = toAdd.substr(0, desiredLength - retLen);
-    }
+    toAdd = truncateWidth(toAdd, desiredLength - retLen);
     ret += toAdd;
-    retLen += toAdd.length;
+    retLen += strlen(toAdd);
     if(retLen < desiredLength){
       ret += myArray[0];
       updateState(state,myArray);
