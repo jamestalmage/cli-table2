@@ -165,6 +165,22 @@ describe('utils',function(){
       var expected = '\x1b[31mhello\x1b[0m wor…';
       expect(truncate(original,10)).to.equal(expected);
     });
+
+    it('truncateWidth("漢字テスト", 15) === "漢字テスト"',function(){
+      expect(truncate('漢字テスト',15)).to.equal('漢字テスト');
+    });
+
+    it('truncateWidth("漢字テスト", 6) === "漢字…"',function(){
+      expect(truncate('漢字テスト',6)).to.equal('漢字…');
+    });
+
+    it('truncateWidth("漢字テスト", 5) === "漢字…"',function(){
+      expect(truncate('漢字テスト',5)).to.equal('漢字…');
+    });
+
+    it('truncateWidth("漢字testてすと", 12) === "漢字testて…"',function(){
+      expect(truncate('漢字testてすと',12)).to.equal('漢字testて…');
+    });
   });
 
   function defaultOptions(){
