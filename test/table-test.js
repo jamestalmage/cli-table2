@@ -46,34 +46,25 @@ describe('@api Table ',function(){
   });
 
   it('works with CJK values', function () {
-    var table = new Table({
-      head: ['Rel', 'Change', 'By', 'When']
-      , style: {border:[],head:[]}
-      , colWidths: [6, 21, 25, 17]
-    });
+    var table = new Table({style: {border:[],head:[]}, colWidths: [5, 10, 5]});
 
     table.push(
-      ['v0.1', 'Testing something cool', 'rauchg@gmail.com', '7 minutes ago']
-      , ['v0.1', 'Testing something cool', 'rauchg@gmail.com', '8 minutes ago']
-      , ['v0.1', '中文测试', 'rauchg@gmail.com', '9 minutes ago']
-      , ['v0.1', '日本語テスト', 'rauchg@gmail.com', '10 minutes ago']
-      , ['v0.1', '한국어테스트', 'rauchg@gmail.com', '11 minutes ago']
+      ['foobar', 'English test', 'baz']
+      , ['foobar', '中文测试', 'baz']
+      , ['foobar', '日本語テスト', 'baz']
+      , ['foobar', '한국어테스트', 'baz']
     );
 
     var expected = [
-      '┌──────┬─────────────────────┬─────────────────────────┬─────────────────┐'
-      , '│ Rel  │ Change              │ By                      │ When            │'
-      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
-      , '│ v0.1 │ Testing something … │ rauchg@gmail.com        │ 7 minutes ago   │'
-      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
-      , '│ v0.1 │ Testing something … │ rauchg@gmail.com        │ 8 minutes ago   │'
-      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
-      , '│ v0.1 │ 中文测试            │ rauchg@gmail.com        │ 9 minutes ago   │'
-      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
-      , '│ v0.1 │ 日本語テスト        │ rauchg@gmail.com        │ 10 minutes ago  │'
-      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
-      , '│ v0.1 │ 한국어테스트        │ rauchg@gmail.com        │ 11 minutes ago  │'
-      , '└──────┴─────────────────────┴─────────────────────────┴─────────────────┘'
+        '┌─────┬──────────┬─────┐'
+      , '│ fo… │ English… │ baz │'
+      , '├─────┼──────────┼─────┤'
+      , '│ fo… │ 中文测试 │ baz │'
+      , '├─────┼──────────┼─────┤'
+      , '│ fo… │ 日本語…  │ baz │'
+      , '├─────┼──────────┼─────┤'
+      , '│ fo… │ 한국어…  │ baz │'
+      , '└─────┴──────────┴─────┘'
     ];
 
     expect(table.toString()).to.equal(expected.join("\n"));
