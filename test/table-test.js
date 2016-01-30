@@ -44,6 +44,40 @@ describe('@api Table ',function(){
     }).to.throw();
 
   });
+
+  it('works with CJK values', function () {
+    var table = new Table({
+      head: ['Rel', 'Change', 'By', 'When']
+      , style: {border:[],head:[]}
+      , colWidths: [6, 21, 25, 17]
+    });
+
+    table.push(
+      ['v0.1', 'Testing something cool', 'rauchg@gmail.com', '7 minutes ago']
+      , ['v0.1', 'Testing something cool', 'rauchg@gmail.com', '8 minutes ago']
+      , ['v0.1', '中文测试', 'rauchg@gmail.com', '9 minutes ago']
+      , ['v0.1', '日本語テスト', 'rauchg@gmail.com', '10 minutes ago']
+      , ['v0.1', '한국어테스트', 'rauchg@gmail.com', '11 minutes ago']
+    );
+
+    var expected = [
+      '┌──────┬─────────────────────┬─────────────────────────┬─────────────────┐'
+      , '│ Rel  │ Change              │ By                      │ When            │'
+      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
+      , '│ v0.1 │ Testing something … │ rauchg@gmail.com        │ 7 minutes ago   │'
+      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
+      , '│ v0.1 │ Testing something … │ rauchg@gmail.com        │ 8 minutes ago   │'
+      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
+      , '│ v0.1 │ 中文测试            │ rauchg@gmail.com        │ 9 minutes ago   │'
+      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
+      , '│ v0.1 │ 日本語テスト        │ rauchg@gmail.com        │ 10 minutes ago  │'
+      , '├──────┼─────────────────────┼─────────────────────────┼─────────────────┤'
+      , '│ v0.1 │ 한국어테스트        │ rauchg@gmail.com        │ 11 minutes ago  │'
+      , '└──────┴─────────────────────┴─────────────────────────┴─────────────────┘'
+    ];
+
+    expect(table.toString()).to.equal(expected.join("\n"));
+  });
 });
 
 
