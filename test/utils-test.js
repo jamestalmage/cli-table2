@@ -181,6 +181,12 @@ describe('utils',function(){
     it('truncateWidth("漢字testてすと", 12) === "漢字testて…"',function(){
       expect(truncate('漢字testてすと',12)).to.equal('漢字testて…');
     });
+
+    it('handles color code with CJK chars',function(){
+      var original = '漢字\x1b[31m漢字\x1b[0m漢字';
+      var expected = '漢字\x1b[31m漢字\x1b[0m漢…';
+      expect(truncate(original,11)).to.equal(expected);
+    });
   });
 
   function defaultOptions(){
