@@ -402,5 +402,13 @@ describe('utils',function(){
       ]);
     });
 
+    it('handles CJK chars',function(){
+      var input = colors.red('漢字\nテスト').split('\n');
+
+      expect(utils.colorizeLines(input)).to.eql([
+        colors.red('漢字'),
+        colors.red('テスト')
+      ]);
+    });
   });
 });
