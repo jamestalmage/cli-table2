@@ -1,5 +1,5 @@
 var kindOf = require('kind-of');
-var objectAssign = require('object-assign');
+var objectAssign = Object.assign;
 var Cell = require('./cell');
 var RowSpanCell = Cell.RowSpanCell;
 var ColSpanCell = Cell.ColSpanCell;
