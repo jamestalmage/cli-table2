@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "kind-of": "^3.0.4",
-    "object-assign": "^4.1.0",
+    "is-fullwidth-code-point": "github:bluelovers/is-fullwidth-code-point",
     "string-width": "^1.0.1"
   },
   "devDependencies": {
