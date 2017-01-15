@@ -1,4 +1,4 @@
-var objectAssign = require('object-assign');
+var objectAssign = Object.assign;
 var stringWidth = require('string-width');
 
 function codeRegex(capture){
@@ -12,29 +12,34 @@ function strlen(str){
   return split.reduce(function (memo, s) { return (stringWidth(s) > memo) ? stringWidth(s) : memo }, 0);
 }
 
-function repeat(str,times){
+function repeat(str,times, chkwidth){
+  if (chkwidth)
+  {
+	let w = stringWidth(str)
+	times = Math.floor(times / w) + (times % w);
+  }
   return Array(times + 1).join(str);
 }
 
 function pad(str, len, pad, dir) {
   var length = strlen(str);
   if (len + 1 >= length) {
-    var padlen = len - length;
-    switch (dir) {
-      case 'right':
-        str = repeat(pad, padlen) + str;
-        break;
+	var padlen = len - length;
+	switch (dir) {
+	  case 'right':
+		str = repeat(pad, padlen, true) + str;
+		break;
 
-      case 'center':
-        var right = Math.ceil((padlen) / 2);
-        var left = padlen - right;
-        str = repeat(pad, left) + str + repeat(pad, right);
-        break;
+	  case 'center':
+		var right = Math.ceil((padlen) / 2);
+		var left = padlen - right;
+		str = repeat(pad, left, true) + str + repeat(pad, right, true);
+		break;
 
-      default :
-        str = str + repeat(pad,padlen);
-        break;
-    }
+	  default :
+		str = str + repeat(pad,padlen, true);
+		break;
+	}
   }
   return str;
 }
@@ -60,29 +65,29 @@ addToCodeCache('strikethrough', 9, 29);
 function updateState(state, controlChars){
   var controlCode = controlChars[1] ? parseInt(controlChars[1].split(';')[0]) : 0;
   if ( (controlCode >= 30 && controlCode <= 39)
-     || (controlCode >= 90 && controlCode <= 97)
+	 || (controlCode >= 90 && controlCode <= 97)
   ) {
-    state.lastForegroundAdded = controlChars[0];
-    return;
+	state.lastForegroundAdded = controlChars[0];
+	return;
   }
   if ( (controlCode >= 40 && controlCode <= 49)
-     || (controlCode >= 100 && controlCode <= 107)
+	 || (controlCode >= 100 && controlCode <= 107)
   ) {
-    state.lastBackgroundAdded = controlChars[0];
-    return;
+	state.lastBackgroundAdded = controlChars[0];
+	return;
   }
   if (controlCode === 0) {
-    for (var i in state) {
-      /* istanbul ignore else */
-      if (state.hasOwnProperty(i)) {
-        delete state[i];
-      }
-    }
-    return;
+	for (var i in state) {
+	  /* istanbul ignore else */
+	  if (state.hasOwnProperty(i)) {
+		delete state[i];
+	  }
+	}
+	return;
   }
   var info = codeCache[controlChars[0]];
   if (info) {
-    state[info.set] = info.to;
+	state[info.set] = info.to;
   }
 }
 
@@ -91,8 +96,8 @@ function readState(line){
   var controlChars = code.exec(line);
   var state = {};
   while(controlChars !== null){
-    updateState(state, controlChars);
-    controlChars = code.exec(line);
+	updateState(state, controlChars);
+	controlChars = code.exec(line);
   }
   return state;
 }
@@ -105,16 +110,16 @@ function unwindState(state,ret){
   delete state.lastForegroundAdded;
 
   Object.keys(state).forEach(function(key){
-    if(state[key]){
-      ret += codeCache[key].off;
-    }
+	if(state[key]){
+	  ret += codeCache[key].off;
+	}
   });
 
   if(lastBackgroundAdded && (lastBackgroundAdded != '\u001b[49m')){
-    ret += '\u001b[49m';
+	ret += '\u001b[49m';
   }
   if(lastForegroundAdded && (lastForegroundAdded != '\u001b[39m')){
-    ret += '\u001b[39m';
+	ret += '\u001b[39m';
   }
 
   return ret;
@@ -128,16 +133,16 @@ function rewindState(state,ret){
   delete state.lastForegroundAdded;
 
   Object.keys(state).forEach(function(key){
-    if(state[key]){
-      ret = codeCache[key].on + ret;
-    }
+	if(state[key]){
+	  ret = codeCache[key].on + ret;
+	}
   });
 
   if(lastBackgroundAdded && (lastBackgroundAdded != '\u001b[49m')){
-    ret = lastBackgroundAdded + ret;
+	ret = lastBackgroundAdded + ret;
   }
   if(lastForegroundAdded && (lastForegroundAdded != '\u001b[39m')){
-    ret = lastForegroundAdded + ret;
+	ret = lastForegroundAdded + ret;
   }
 
   return ret;
@@ -145,11 +150,11 @@ function rewindState(state,ret){
 
 function truncateWidth(str, desiredLength){
   if (str.length === strlen(str)) {
-    return str.substr(0, desiredLength);
+	return str.substr(0, desiredLength);
   }
 
   while (strlen(str) > desiredLength){
-    str = str.slice(0, -1);
+	str = str.slice(0, -1);
   }
 
   return str;
@@ -165,20 +170,20 @@ function truncateWidthWithAnsi(str, desiredLength){
   var state = {};
 
   while(retLen < desiredLength){
-    myArray = code.exec(str);
-    var toAdd = split[splitIndex];
-    splitIndex++;
-    if (retLen + strlen(toAdd) > desiredLength){
-      toAdd = truncateWidth(toAdd, desiredLength - retLen);
-    }
-    ret += toAdd;
-    retLen += strlen(toAdd);
+	myArray = code.exec(str);
+	var toAdd = split[splitIndex];
+	splitIndex++;
+	if (retLen + strlen(toAdd) > desiredLength){
+	  toAdd = truncateWidth(toAdd, desiredLength - retLen);
+	}
+	ret += toAdd;
+	retLen += strlen(toAdd);
 
-    if(retLen < desiredLength){
-      if (!myArray) { break; }  // full-width chars may cause a whitespace which cannot be filled
-      ret += myArray[0];
-      updateState(state,myArray);
-    }
+	if(retLen < desiredLength){
+	  if (!myArray) { break; }  // full-width chars may cause a whitespace which cannot be filled
+	  ret += myArray[0];
+	  updateState(state,myArray);
+	}
   }
 
   return unwindState(state,ret);
@@ -188,7 +193,7 @@ function truncate(str, desiredLength, truncateChar){
   truncateChar = truncateChar || '…';
   var lengthOfStr = strlen(str);
   if(lengthOfStr <= desiredLength){
-    return str;
+	return str;
   }
   desiredLength -= strlen(truncateChar);
 
@@ -200,36 +205,36 @@ function truncate(str, desiredLength, truncateChar){
 
 function defaultOptions(){
   return{
-    chars: {
-      'top': '─'
-      , 'top-mid': '┬'
-      , 'top-left': '┌'
-      , 'top-right': '┐'
-      , 'bottom': '─'
-      , 'bottom-mid': '┴'
-      , 'bottom-left': '└'
-      , 'bottom-right': '┘'
-      , 'left': '│'
-      , 'left-mid': '├'
-      , 'mid': '─'
-      , 'mid-mid': '┼'
-      , 'right': '│'
-      , 'right-mid': '┤'
-      , 'middle': '│'
-    }
-    , truncate: '…'
-    , colWidths: []
-    , rowHeights: []
-    , colAligns: []
-    , rowAligns: []
-    , style: {
-      'padding-left': 1
-      , 'padding-right': 1
-      , head: ['red']
-      , border: ['grey']
-      , compact : false
-    }
-    , head: []
+	chars: {
+	  'top': '─'
+	  , 'top-mid': '┬'
+	  , 'top-left': '┌'
+	  , 'top-right': '┐'
+	  , 'bottom': '─'
+	  , 'bottom-mid': '┴'
+	  , 'bottom-left': '└'
+	  , 'bottom-right': '┘'
+	  , 'left': '│'
+	  , 'left-mid': '├'
+	  , 'mid': '─'
+	  , 'mid-mid': '┼'
+	  , 'right': '│'
+	  , 'right-mid': '┤'
+	  , 'middle': '│'
+	}
+	, truncate: '…'
+	, colWidths: []
+	, rowHeights: []
+	, colAligns: []
+	, rowAligns: []
+	, style: {
+	  'padding-left': 1
+	  , 'padding-right': 1
+	  , head: ['red']
+	  , border: ['grey']
+	  , compact : false
+	}
+	, head: []
   };
 }
 
@@ -249,25 +254,25 @@ function wordWrap(maxLength,input){
   var lineLength = 0;
   var whitespace;
   for (var i = 0; i < split.length; i += 2) {
-    var word = split[i];
-    var newLength = lineLength + strlen(word);
-    if (lineLength > 0 && whitespace) {
-      newLength += whitespace.length;
-    }
-    if(newLength > maxLength){
-      if(lineLength !== 0){
-        lines.push(line.join(''));
-      }
-      line = [word];
-      lineLength = strlen(word);
-    } else {
-      line.push(whitespace || '', word);
-      lineLength = newLength;
-    }
-    whitespace = split[i+1];
+	var word = split[i];
+	var newLength = lineLength + strlen(word);
+	if (lineLength > 0 && whitespace) {
+	  newLength += whitespace.length;
+	}
+	if(newLength > maxLength){
+	  if(lineLength !== 0){
+		lines.push(line.join(''));
+	  }
+	  line = [word];
+	  lineLength = strlen(word);
+	} else {
+	  line.push(whitespace || '', word);
+	  lineLength = newLength;
+	}
+	whitespace = split[i+1];
   }
   if(lineLength){
-    lines.push(line.join(''));
+	lines.push(line.join(''));
   }
   return lines;
 }
@@ -276,7 +281,7 @@ function multiLineWordWrap(maxLength, input){
   var output = [];
   input = input.split('\n');
   for(var i = 0; i < input.length; i++){
-    output.push.apply(output,wordWrap(maxLength,input[i]));
+	output.push.apply(output,wordWrap(maxLength,input[i]));
   }
   return output;
 }
@@ -285,10 +290,10 @@ function colorizeLines(input){
   var state = {};
   var output = [];
   for(var i = 0; i < input.length; i++){
-    var line = rewindState(state,input[i]) ;
-    state = readState(line);
-    var temp = objectAssign({},state);
-    output.push(unwindState(temp,line));
+	var line = rewindState(state,input[i]) ;
+	state = readState(line);
+	var temp = objectAssign({},state);
+	output.push(unwindState(temp,line));
   }
   return output;
 }
@@ -300,5 +305,6 @@ module.exports = {
   truncate:truncate,
   mergeOptions:mergeOptions,
   wordWrap:multiLineWordWrap,
-  colorizeLines:colorizeLines
+  colorizeLines:colorizeLines,
+  stringWidth:stringWidth
 };

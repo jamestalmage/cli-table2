@@ -12,8 +12,7 @@
   },
   "dependencies": {
     "kind-of": "^3.0.4",
-    "object-assign": "^4.1.0",
-    "string-width": "^1.0.1"
+    "string-width": "github:bluelovers/string-width"
   },
   "devDependencies": {
     "ansi-256-colors": "^1.1.0",
