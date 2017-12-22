@@ -166,11 +166,11 @@ Cell.prototype._topLeftChar = function(offset){
       leftChar = 'leftMid';
     }
     else {
-      leftChar = offset == 0 ? 'midMid' : 'bottomMid';
+      leftChar = offset == 0 ? 'midMid' : 'midBottom';
       if(this.cells){  //TODO: cells should always exist - some tests don't fill it in though
         var spanAbove = this.cells[this.y-1][x] instanceof Cell.ColSpanCell;
         if(spanAbove){
-          leftChar = offset == 0 ? 'topMid' : 'mid';
+          leftChar = offset == 0 ? 'midTop' : 'mid';
         }
         if(offset == 0){
           var i = 1;
@@ -178,7 +178,7 @@ Cell.prototype._topLeftChar = function(offset){
             i++;
           }
           if(this.cells[this.y][x-i] instanceof Cell.RowSpanCell){
-            leftChar = 'leftMid';
+            leftChar = 'midLeft';
           }
         }
       }
@@ -273,7 +273,7 @@ Cell.prototype.drawEmpty = function(drawRight,spanningCell){
       cellLeft = this.cells[cellLeft.y][cellLeft.x-1];
     }
     if(!(cellLeft instanceof RowSpanCell)){
-      left = this.chars['rightMid'];
+      left = this.chars['midRight'];
     }
   }
   var right = (drawRight ? this.chars['right'] : '');
@@ -361,7 +361,11 @@ var CHAR_NAMES = [  'top'
   , 'left'
   , 'left-mid'
   , 'mid'
+  , 'mid-top'
+  , 'mid-bottom'
   , 'mid-mid'
+  , 'mid-left'
+  , 'mid-right'
   , 'right'
   , 'right-mid'
   , 'middle'
