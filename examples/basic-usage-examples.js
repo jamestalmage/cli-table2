@@ -154,6 +154,49 @@ module.exports = function(runTest) {
     return [makeTable,expected];
   });
 
+  it('Stylize the table with custom border characters and use colSpan/rowSpan', function (){
+    function makeTable(){
+      var table = new Table({
+        chars: {
+          'top': '═'
+          , 'top-mid': '╤'
+          , 'top-left': '╔'
+          , 'top-right': '╗'
+          , 'bottom': '═'
+          , 'bottom-mid': '╧'
+          , 'bottom-left': '╚'
+          , 'bottom-right': '╝'
+          , 'left': '║'
+          , 'left-mid': '╟'
+          , 'right': '║'
+          , 'right-mid': '╢'
+        },
+        style: {
+          head: []
+          , border: []
+        }
+      });
+
+      table.push(
+        [{ content: 'foo', colSpan: 2 }, { content: 'bar', rowSpan: 2}]
+        , ['baz', 'frob']
+      );
+
+      return table;
+    }
+
+    var expected = [
+        '╔════════════╤═════╗'
+      , '║ foo        │ bar ║'
+      , '╟─────┬──────┤     ║'
+      , '║ baz │ frob │     ║'
+      , '╚═════╧══════╧═════╝'
+
+    ];
+
+    return [makeTable,expected];
+  });
+
   it('Use ansi colors (i.e. colors.js) to style text within the cells at will, even across multiple lines',function(){
     function makeTable(){
       var table = new Table({style:{border:[],header:[]}});

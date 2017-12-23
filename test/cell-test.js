@@ -29,8 +29,36 @@ describe('Cell',function(){
       , 'left': '│'
       , 'leftMid': '├'
       , 'mid': '─'
+      , 'midTop': '┬'
+      , 'midBottom': '┴'
       , 'midMid': '┼'
+      , 'midLeft': '├'
+      , 'midRight': '┤'
       , 'right': '│'
+      , 'rightMid': '┤'
+      , 'middle': '│'
+    };
+  }
+
+  function customChars(){
+    return {
+      'top': '═'
+      , 'topMid': '╤'
+      , 'topLeft': '╔'
+      , 'topRight': '╗'
+      , 'bottom': '═'
+      , 'bottomMid': '╧'
+      , 'bottomLeft': '╚'
+      , 'bottomRight': '╝'
+      , 'left': '║'
+      , 'leftMid': '├'
+      , 'mid': '─'
+      , 'midTop': '┬'
+      , 'midBottom': '┴'
+      , 'midMid': '┼'
+      , 'midLeft': '├'
+      , 'midRight': '┤'
+      , 'right': '║'
       , 'rightMid': '┤'
       , 'middle': '│'
     };
@@ -566,7 +594,7 @@ describe('Cell',function(){
       cell = new Cell();
 
       //manually init
-      cell.chars = defaultChars();
+      cell.chars = customChars();
       cell.paddingLeft = cell.paddingRight = 1;
       cell.width = 7;
       cell.height = 3;
@@ -583,17 +611,17 @@ describe('Cell',function(){
     describe('top line',function(){
       it('will draw the top left corner when x=0,y=0',function(){
         cell.x = cell.y = 0;
-        expect(cell.draw('top')).to.equal('┌───────');
+        expect(cell.draw('top')).to.equal('╔═══════');
         cell.drawRight = true;
-        expect(cell.draw('top')).to.equal('┌───────┐');
+        expect(cell.draw('top')).to.equal('╔═══════╗');
       });
 
       it('will draw the top mid corner when x=1,y=0',function(){
         cell.x = 1;
         cell.y = 0;
-        expect(cell.draw('top')).to.equal('┬───────');
+        expect(cell.draw('top')).to.equal('╤═══════');
         cell.drawRight = true;
-        expect(cell.draw('top')).to.equal('┬───────┐');
+        expect(cell.draw('top')).to.equal('╤═══════╗');
       });
 
       it('will draw the left mid corner when x=0,y=1',function(){
@@ -614,7 +642,7 @@ describe('Cell',function(){
 
       it('will draw in the color specified by border style',function(){
         cell.border = ['gray'];
-        expect(cell.draw('top')).to.equal(colors.gray('┌───────'))
+        expect(cell.draw('top')).to.equal(colors.gray('╔═══════'))
       });
     });
 
@@ -622,22 +650,22 @@ describe('Cell',function(){
       it('will draw the bottom left corner if x=0',function(){
         cell.x = 0;
         cell.y = 1;
-        expect(cell.draw('bottom')).to.equal('└───────');
+        expect(cell.draw('bottom')).to.equal('╚═══════');
         cell.drawRight = true;
-        expect(cell.draw('bottom')).to.equal('└───────┘');
+        expect(cell.draw('bottom')).to.equal('╚═══════╝');
       });
 
       it('will draw the bottom left corner if x=1',function(){
         cell.x = 1;
         cell.y = 1;
-        expect(cell.draw('bottom')).to.equal('┴───────');
+        expect(cell.draw('bottom')).to.equal('╧═══════');
         cell.drawRight = true;
-        expect(cell.draw('bottom')).to.equal('┴───────┘');
+        expect(cell.draw('bottom')).to.equal('╧═══════╝');
       });
 
       it('will draw in the color specified by border style',function(){
         cell.border = ['gray'];
-        expect(cell.draw('bottom')).to.equal(colors.gray('└───────'))
+        expect(cell.draw('bottom')).to.equal(colors.gray('╚═══════'))
       });
     });
 

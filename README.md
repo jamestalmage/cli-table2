@@ -103,6 +103,7 @@ var table = new Table({
   chars: { 'top': '═' , 'top-mid': '╤' , 'top-left': '╔' , 'top-right': '╗'
          , 'bottom': '═' , 'bottom-mid': '╧' , 'bottom-left': '╚' , 'bottom-right': '╝'
          , 'left': '║' , 'left-mid': '╟' , 'mid': '─' , 'mid-mid': '┼'
+         , 'mid-top': '┬' , 'mid-bottom': '┴' , 'mid-left': '├' , 'mid-right': '┤'
          , 'right': '║' , 'right-mid': '╢' , 'middle': '│' }
 });
 
@@ -146,6 +147,7 @@ var table = new Table({
   chars: { 'top': '' , 'top-mid': '' , 'top-left': '' , 'top-right': ''
          , 'bottom': '' , 'bottom-mid': '' , 'bottom-left': '' , 'bottom-right': ''
          , 'left': '' , 'left-mid': '' , 'mid': '' , 'mid-mid': ''
+         , 'mid-top': '' , 'mid-bottom': '' , 'mid-left': '' , 'mid-right': ''
          , 'right': '' , 'right-mid': '' , 'middle': ' ' },
   style: { 'padding-left': 0, 'padding-right': 0 }
 });
