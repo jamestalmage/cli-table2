@@ -1,5 +1,5 @@
 var objectAssign = require('object-assign');
-var stringWidth = require('string-width');
+var stringz = require('stringz');
 
 function codeRegex(capture){
   return capture ? /\u001b\[((?:\d*;){0,5}\d*)m/g : /\u001b\[(?:\d*;){0,5}\d*m/g
@@ -9,7 +9,7 @@ function strlen(str){
   var code = codeRegex();
   var stripped = ("" + str).replace(code,'');
   var split = stripped.split("\n");
-  return split.reduce(function (memo, s) { return (stringWidth(s) > memo) ? stringWidth(s) : memo }, 0);
+  return split.reduce(function (memo, s) { return (stringz.length(s) > memo) ? stringz.length(s) : memo }, 0);
 }
 
 function repeat(str,times){
