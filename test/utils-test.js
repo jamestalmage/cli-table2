@@ -17,6 +17,10 @@ describe('utils',function(){
       expect(strlen('hello')).to.equal(5);
     });
 
+    it('length of "h\u0336e\u0336l\u0336l\u0336o\u0336" is 5',function(){
+      expect(strlen('h\u0336e\u0336l\u0336l\u0336o\u0336')).to.equal(5);
+    });
+
     it('length of "hi" is 2',function(){
       expect(strlen('hi')).to.equal(2);
     });
