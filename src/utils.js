@@ -2,7 +2,7 @@ var objectAssign = require('object-assign');
 var stringWidth = require('string-width');
 
 function codeRegex(capture){
-  return capture ? /\u001b\[((?:\d*;){0,5}\d*)m/g : /\u001b\[(?:\d*;){0,5}\d*m/g
+  return capture ? /\u0336|\u001b\[((?:\d*;){0,5}\d*)m/g : /\u0336|\u001b\[(?:\d*;){0,5}\d*m/g
 }
 
 function strlen(str){
