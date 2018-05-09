@@ -24,20 +24,20 @@ Table.prototype.toString = function(){
 
   var cells = tableLayout.makeTableLayout(array);
 
-  _.forEach(cells,function(row){
-    _.forEach(row,function(cell){
+  _.forEach(cells,_.bind(function(row){
+    _.forEach(row,_.bind(function(cell){
       cell.mergeTableOptions(this.options,cells);
-    },this);
-  },this);
+    },this));
+  },this));
 
   tableLayout.computeWidths(this.options.colWidths,cells);
   tableLayout.computeHeights(this.options.rowHeights,cells);
 
-  _.forEach(cells,function(row,rowIndex){
-    _.forEach(row,function(cell,cellIndex){
+  _.forEach(cells,_.bind(function(row,rowIndex){
+    _.forEach(row,_.bind(function(cell,cellIndex){
       cell.init(this.options);
-    },this);
-  },this);
+    },this));
+  },this));
 
   var result = [];
 

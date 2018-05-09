@@ -132,12 +132,12 @@ Cell.prototype.draw = function(lineNum,spanningCell){
 Cell.prototype.drawTop = function(drawRight){
   var content = [];
   if(this.cells){  //TODO: cells should always exist - some tests don't fill it in though
-    _.forEach(this.widths,function(width,index){
+    _.forEach(this.widths,_.bind(function(width,index){
       content.push(this._topLeftChar(index));
       content.push(
         utils.repeat(this.chars[this.y == 0 ? 'top' : 'mid'],width)
       );
-    },this);
+    },this));
   }
   else {
     content.push(this._topLeftChar(0));
