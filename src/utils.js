@@ -298,6 +298,7 @@ module.exports = {
   repeat:repeat,
   pad:pad,
   truncate:truncate,
+  truncateWidthWithAnsi:truncateWidthWithAnsi,
   mergeOptions:mergeOptions,
   wordWrap:multiLineWordWrap,
   colorizeLines:colorizeLines
