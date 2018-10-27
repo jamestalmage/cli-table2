@@ -17,6 +17,20 @@
 
 ```
 
+##### colSpan works with headers too:
+    ┌───────────┬────────┐
+    │ foobar    │ bazbar │
+    ├─────┬─────┼────────┤
+    │ foo │ bar │ baz    │
+    └─────┴─────┴────────┘
+```javascript
+      var table = new Table({
+        style: {border:[], head: []},
+        head:[{content: 'foobar', colSpan: 2}, {content: 'bazbar'}]
+      });
+
+      table.push(['foo', 'bar', 'baz']);
+```
 
 ##### use colSpan to span columns - (colSpan below normal cell)
     ┌───────┬───────┐
