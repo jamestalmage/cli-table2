@@ -1,15 +1,14 @@
 var objectAssign = require('object-assign');
 var stringWidth = require('string-width');
+var wordWrap = require('wrap-ansi');
 
 function codeRegex(capture){
   return capture ? /\u001b\[((?:\d*;){0,5}\d*)m/g : /\u001b\[(?:\d*;){0,5}\d*m/g
 }
 
 function strlen(str){
-  var code = codeRegex();
-  var stripped = ("" + str).replace(code,'');
-  var split = stripped.split("\n");
-  return split.reduce(function (memo, s) { return (stringWidth(s) > memo) ? stringWidth(s) : memo }, 0);
+  var split = str.split("\n");
+  return split.reduce(function (memo, s) { return Math.max(stringWidth(s), memo) }, 0);
 }
 
 function repeat(str,times){
@@ -86,17 +85,6 @@ function updateState(state, controlChars){
   }
 }
 
-function readState(line){
-  var code = codeRegex(true);
-  var controlChars = code.exec(line);
-  var state = {};
-  while(controlChars !== null){
-    updateState(state, controlChars);
-    controlChars = code.exec(line);
-  }
-  return state;
-}
-
 function unwindState(state,ret){
   var lastBackgroundAdded = state.lastBackgroundAdded;
   var lastForegroundAdded = state.lastForegroundAdded;
@@ -115,29 +103,6 @@ function unwindState(state,ret){
   }
   if(lastForegroundAdded && (lastForegroundAdded != '\u001b[39m')){
     ret += '\u001b[39m';
-  }
-
-  return ret;
-}
-
-function rewindState(state,ret){
-  var lastBackgroundAdded = state.lastBackgroundAdded;
-  var lastForegroundAdded = state.lastForegroundAdded;
-
-  delete state.lastBackgroundAdded;
-  delete state.lastForegroundAdded;
-
-  Object.keys(state).forEach(function(key){
-    if(state[key]){
-      ret = codeCache[key].on + ret;
-    }
-  });
-
-  if(lastBackgroundAdded && (lastBackgroundAdded != '\u001b[49m')){
-    ret = lastBackgroundAdded + ret;
-  }
-  if(lastForegroundAdded && (lastForegroundAdded != '\u001b[39m')){
-    ret = lastForegroundAdded + ret;
   }
 
   return ret;
@@ -242,53 +207,15 @@ function mergeOptions(options,defaults){
   return ret;
 }
 
-function wordWrap(maxLength,input){
-  var lines = [];
-  var split = input.split(/(\s+)/g);
-  var line = [];
-  var lineLength = 0;
-  var whitespace;
-  for (var i = 0; i < split.length; i += 2) {
-    var word = split[i];
-    var newLength = lineLength + strlen(word);
-    if (lineLength > 0 && whitespace) {
-      newLength += whitespace.length;
-    }
-    if(newLength > maxLength){
-      if(lineLength !== 0){
-        lines.push(line.join(''));
-      }
-      line = [word];
-      lineLength = strlen(word);
-    } else {
-      line.push(whitespace || '', word);
-      lineLength = newLength;
-    }
-    whitespace = split[i+1];
-  }
-  if(lineLength){
-    lines.push(line.join(''));
-  }
-  return lines;
-}
-
 function multiLineWordWrap(maxLength, input){
   var output = [];
   input = input.split('\n');
   for(var i = 0; i < input.length; i++){
-    output.push.apply(output,wordWrap(maxLength,input[i]));
-  }
-  return output;
-}
-
-function colorizeLines(input){
-  var state = {};
-  var output = [];
-  for(var i = 0; i < input.length; i++){
-    var line = rewindState(state,input[i]) ;
-    state = readState(line);
-    var temp = objectAssign({},state);
-    output.push(unwindState(temp,line));
+    var wrapped = wordWrap(input[i], maxLength).split('\n');
+    if (wrapped[wrapped.length - 1].length === 0) {
+      wrapped.pop();
+    }
+    output.push.apply(output, wrapped);
   }
   return output;
 }
@@ -299,6 +226,5 @@ module.exports = {
   pad:pad,
   truncate:truncate,
   mergeOptions:mergeOptions,
-  wordWrap:multiLineWordWrap,
-  colorizeLines:colorizeLines
+  wordWrap:multiLineWordWrap
 };

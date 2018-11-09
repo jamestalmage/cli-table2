@@ -59,10 +59,10 @@ Cell.prototype.mergeTableOptions = function(tableOptions,cells){
         i++;
       }
     }
-    this.lines = utils.colorizeLines(utils.wordWrap(fixedWidth,this.content));
+    this.lines = utils.wordWrap(fixedWidth,this.content);
   }
   else {
-    this.lines = utils.colorizeLines(this.content.split('\n'));
+    this.lines = this.content.split('\n');
   }
 
   this.desiredWidth = utils.strlen(this.content) + this.paddingLeft + this.paddingRight;
