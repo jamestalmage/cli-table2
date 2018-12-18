@@ -69,6 +69,64 @@ describe('@api Table ',function(){
 
     expect(table.toString()).to.equal(expected.join("\n"));
   });
+
+  it('will render head with text', function() {
+      var table = new Table({
+          style: {border:[], head: []},
+          head:['foobar', 'barbar', 'bazbar'],
+      });
+
+      table.push(['foo', 'bar', 'baz']);
+
+      var expected = [
+           '┌────────┬────────┬────────┐'
+          ,'│ foobar │ barbar │ bazbar │'
+          ,'├────────┼────────┼────────┤'
+          ,'│ foo    │ bar    │ baz    │'
+          ,'└────────┴────────┴────────┘'
+      ];
+
+      expect(table.toString()).to.equal(expected.join('\n'));
+  });
+
+  it('will render head with Cells', function() {
+      var table = new Table({
+          style: {border:[], head: []},
+          head:[{content: 'foobar'}, {content: 'barbar'}, {content: 'bazbar'}],
+      });
+
+      table.push(['foo', 'bar', 'baz']);
+
+      var expected = [
+           '┌────────┬────────┬────────┐'
+          ,'│ foobar │ barbar │ bazbar │'
+          ,'├────────┼────────┼────────┤'
+          ,'│ foo    │ bar    │ baz    │'
+          ,'└────────┴────────┴────────┘'
+      ];
+
+      expect(table.toString()).to.equal(expected.join('\n'));
+  });
+
+  it('will render colSpan in head correctly', function() {
+      var table = new Table({
+          style: {border:[], head: []},
+          head:[{content: 'foobar', colSpan: 2}, {content: 'bazbar'}],
+      });
+
+      table.push(['foo', 'bar', 'baz']);
+
+
+      var expected = [
+           '┌───────────┬────────┐'
+          ,'│ foobar    │ bazbar │'
+          ,'├─────┬─────┼────────┤'
+          ,'│ foo │ bar │ baz    │'
+          ,'└─────┴─────┴────────┘'
+      ];
+
+      expect(table.toString()).to.equal(expected.join('\n'));
+  });
 });
 
 
