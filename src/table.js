@@ -73,4 +73,6 @@ Table.prototype.__defineGetter__('width', function (){
   return str[0].length;
 });
 
-module.exports = Table;
+const exp = Table;
+exp.utils = utils;
+module.exports = exp;

@@ -3,7 +3,7 @@ var stringWidth = require('string-width');
 var wordWrap = require('wrap-ansi');
 
 function codeRegex(capture){
-  return capture ? /\u001b\[((?:\d*;){0,5}\d*)m/g : /\u001b\[(?:\d*;){0,5}\d*m/g
+  return capture ? /\u0336|\u001b\[((?:\d*;){0,5}\d*)m/g : /\u0336|\u001b\[(?:\d*;){0,5}\d*m/g
 }
 
 function strlen(str){
@@ -225,6 +225,7 @@ module.exports = {
   repeat:repeat,
   pad:pad,
   truncate:truncate,
+  truncateWidthWithAnsi:truncateWidthWithAnsi,
   mergeOptions:mergeOptions,
   wordWrap:multiLineWordWrap
 };
